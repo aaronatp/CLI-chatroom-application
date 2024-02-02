@@ -284,7 +284,7 @@ class SpeechBubble:
 if __name__ == "__main__":
     # in reality, these variables would probably be stored in other files or a database etc.
     # I have initialized them here for the sake of keeping this program self-contained
-    users = {'aaron': 'password', 'ari': 'other password'}  # dictionary for storing users and passwords
+    users = {'user1': 'password', 'user2': 'other password'}  # dictionary for storing users and passwords
     rooms = {}  # associates rooms with room-content (e.g., messages, etc.)
     current_user = None
     current_room = None

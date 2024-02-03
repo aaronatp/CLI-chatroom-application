@@ -26,10 +26,10 @@ class ChatApp:
 
             if answer == 'a':
                 if self.log_in():
-                    return True  # Exit the loop if login is successful
+                    return True  # exit the loop if login is successful
             elif answer == 'b':
                 if self.create_account_and_log_in():
-                    return True # Exit the loop if account creation is successful
+                    return True  # exit the loop if account creation is successful
             else:
                 print("\nInvalid option. Please enter 'a' to log in or 'b' to create an account.")
 
@@ -110,9 +110,9 @@ class ChatApp:
 
     def create_room(self):
         """
-        This function only creates the room.
+        This function only creates and initializes the room.
         
-        It leaves it to the 'join_room' method to actually initialize and join the room.
+        It leaves it to the 'join_room' method to actually join the room.
         """
         while True:
             print("What is the name of the chat room you want to create?")
@@ -200,7 +200,7 @@ class SharedChat(ChatApp):
     """
     def __init__(self, users, rooms, current_user, room, parent=None):
         super().__init__(users, rooms, current_user, current_room)
-        self.current_room = room  # note, we override the parent class' self.current_method
+        self.current_room = room  # note, we override the parent class' self.current_room method
         self.parent = parent
 
 

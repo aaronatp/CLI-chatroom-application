@@ -459,26 +459,26 @@ class SharedChat(ChatApp):
 
     #         conn.close()
             
-    async def thin_wrapper(self, queue, room):
-        async for i in async_generator(queue, room):  # do you have to use 'await' here?
-            yield queue.get()
+    # async def thin_wrapper(self, queue, room):
+    #     async for i in async_generator(queue, room):  # do you have to use 'await' here?
+    #         yield queue.get()
 
 
     async def run_chat_routine(self):  # this func may leave an awaitable open which fucks up the run function
         # only create a new process for the check update content
-        queue = Queue()
-        run_check_update_content = Process(target=self.check_update_room_content, args=(queue, self.current_room,), daemon=True)
-        run_check_update_content.start()  # checks/updates content database in a while True loop under the hood
+        # queue = Queue()
+        # run_check_update_content = Process(target=self.check_update_room_content, args=(queue, self.current_room,), daemon=True)
+        # run_check_update_content.start()  # checks/updates content database in a while True loop under the hood
         
-        asyncio.create_task(self.thin_wrapper)
+        # asyncio.create_task(self.thin_wrapper)
 
-        while True:
-            queue.get()
+        # while True:
+        #     queue.get()
 
-        async asyncio.gather(
-            run_check_update_content,
-            self.get_and_handle_user_input,
-            )
+        # async asyncio.gather(
+        #     run_check_update_content,
+        #     self.get_and_handle_user_input,
+        #     )
 
         # breakpoint()
         keep_going = await self.get_and_handle_user_input()  # also a while True loop under the hood
@@ -565,3 +565,4 @@ if __name__ == "__main__":
 
     app = ChatApp(current_user, current_room)
     asyncio.run(app.run())
+

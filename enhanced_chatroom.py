@@ -196,7 +196,7 @@ class ChatApp:
         counter = 0
         while True:
             counter +=1
-            print(f"we enter counter for the {counter} timeee\n\n\n")
+            # print(f"we enter counter for the {counter} timeee\n\n\n")
             self.ensure_db_initialized()
             self.ensure_logged_in()
             await self.get_chat_room()  # probably one of the awaitables in the subchat join_chat function doesnt terminate
@@ -215,8 +215,8 @@ class ChatApp:
                     return
                 
                 elif answer == 'no':
-                    await aioconsole.aprint("we're still running")
-                    await aioconsole.aprint(f"current user == {self.current_user}")
+                    # await aioconsole.aprint("we're still running")
+                    # await aioconsole.aprint(f"current user == {self.current_user}")
                     break
 
                 else:
@@ -339,7 +339,7 @@ class SharedChat(ChatApp):
         conn.commit()
         conn.close()
 
-        print("ran conn close - do we finish the update class/db func?")
+        # print("ran conn close - do we finish the update class/db func?")
         return
     
 

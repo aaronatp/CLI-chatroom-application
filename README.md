@@ -29,26 +29,38 @@ Tested on Python 3.9.16.
 
 # Examples
 
-<img width="513" alt="Screenshot 2024-02-04 at 2 20 53 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/3cdd9d10-c98d-4eb6-b94a-2604683a877b">
+<img width="559" alt="Screenshot 2024-02-09 at 1 56 14 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/89463edf-08f9-44e6-b838-daa4b59863cd">
 
-<img width="508" alt="Screenshot 2024-02-04 at 2 21 43 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/03b2656a-1d4f-46c7-842c-9dc124e71175">
+<img width="383" alt="Screenshot 2024-02-09 at 1 56 37 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/44b96ddf-4ae0-4cb9-ab3b-dda029b28202">
 
-<img width="502" alt="Screenshot 2024-02-04 at 2 22 15 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/644e1253-1332-4583-aa20-cd5b0aad3b29">
+<img width="380" alt="Screenshot 2024-02-09 at 1 57 04 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/593cb454-db94-40f1-b84f-d131960467a2">
 
-<img width="465" alt="Screenshot 2024-02-04 at 2 23 38 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/2d2a103a-7ca4-41f0-a883-de93f2433ead">
+<img width="449" alt="Screenshot 2024-02-09 at 1 57 31 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/9721e270-6eff-4994-9e25-79c3de6b2202">
 
-<img width="378" alt="Screenshot 2024-02-04 at 2 24 30 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/8790bcf6-ff8f-4b19-9eac-1feaec20fe76">
+<img width="446" alt="Screenshot 2024-02-09 at 1 58 10 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/e3af6a32-b1b7-49d8-bb5a-9a4687624b71">
 
-<img width="447" alt="Screenshot 2024-02-04 at 2 26 09 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/3ec661a9-c87e-45ab-86b0-5a28e7f7b6a6">
+# Now we create another user in a different terminal session
 
-<img width="384" alt="Screenshot 2024-02-04 at 2 26 50 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/f318c6ed-6a70-4158-accb-30bf6663b205">
+<img width="452" alt="Screenshot 2024-02-09 at 1 59 19 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/9bfa7cf9-b92e-42f4-94ea-0dccec68f624">
 
-NOTE: Once we have created multiple chats, we can switch between them and the chat history is saved.
+<img width="443" alt="Screenshot 2024-02-09 at 1 59 46 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/1bbb0691-fb33-40eb-a46d-e1a941fc3bca">
 
-<img width="652" alt="Screenshot 2024-02-04 at 2 27 23 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/fdbb4131-1541-495c-9100-86ba7b65e8fc">
+<img width="405" alt="Screenshot 2024-02-09 at 2 01 18 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/0a0bd426-db77-451e-95eb-08a3c1c80d16">
 
-<img width="665" alt="Screenshot 2024-02-04 at 2 28 36 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/60a2ca36-3027-4abe-8293-374c97c86ab7">
+# Meanwhile, back in the other terminal session...
 
-<img width="383" alt="Screenshot 2024-02-04 at 2 29 12 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/1478d72f-95f8-48bb-be55-f4396a57f728">
+<img width="294" alt="Screenshot 2024-02-09 at 2 01 58 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/2eb38ecb-1bd8-434c-8f20-55a915baf10f">
 
+<img width="592" alt="Screenshot 2024-02-09 at 2 02 29 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/80b0878b-f1b7-47a8-bb80-36d1d17ceffa">
 
+<img width="520" alt="Screenshot 2024-02-09 at 2 03 06 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/3090f7d9-16a2-4546-a3dc-8b8e762500a7">
+
+# 'q' helps us exit chat rooms
+
+<img width="394" alt="Screenshot 2024-02-09 at 2 03 39 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/3979f696-a7a2-4ddb-b87f-c7b001be5e07">
+
+# We can log back in and our chat history is saved
+
+<img width="462" alt="Screenshot 2024-02-09 at 2 05 19 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/ea1ad95c-da79-4bdc-b639-a253a097b99a">
+
+<img width="510" alt="Screenshot 2024-02-09 at 2 05 53 AM" src="https://github.com/aaronatp/CLI-chatroom-application/assets/58194911/10212e0d-3330-4dc8-80ab-8177bb533941">

@@ -1,27 +1,21 @@
 # chatroom_app.py
 A CLI application that users can run to create, save, and switch between chatrooms.
 
-"chatroom_app.py" is a very bare-bones implementation (requiring only one built-in library). Multiple users should be able to send messages in the same chatroom 
-(but this program only creates one user by default). The program centers around three Python classes: 1) ChatApp; 2) SharedChat; and, 3) SpeechBubble. ChatApp handles 
+The "Basic" folder contains a very bare-bones implementation (requiring only one built-in library). Multiple users are able to send messages in the same chatroom. The program centers around three Python classes: 1) ChatApp; 2) SharedChat; and, 3) SpeechBubble. ChatApp handles 
 the application's administrative tasks (like logging users in and sending them to chatrooms); SharedChat manages the chatrooms for each user; and SpeechBubble organizes 
-and beautifies each message.
+and beautifies each message. The "Basic" version is short, sweet, and I like to think (relatively) elegant.
 
-```ChatApp``` is the parent class of ```SharedChat```, and (in its ```rooms``` attribute) it contains a dictionary of all the chatroom names (dictionary keys) and the 
-content (stored simply as strings) for each chatroom (the dictionary values). When a user sends a message in a chatroom, their instance of ```SharedChat``` updates the 
-corresponding dictionary value in ```ChatApp.rooms```, and other instances use "asyncio" to periodically check ```ChatApp.rooms``` for updates. When ```ChatApp.rooms``` 
-is updated, other ```SharedChat``` instances will retrieve the updated chat data. This ensures that even with multiple users, a chatroom remains synchronized for all users.
+The "Advanced" folder implements a more sophisticated chat room. While the ChatApp and SharedClass are similar, the advanced version stores usernames, passwords, and chat room data in a ```sqlite3``` database. The classes and methods are tailored to work with this database (compard to a simple dictionary in the "Basic" program). The database is self-contained in the file: the program creates the database if it does not already exist in the program's working directory, or simply accesses on if it exists. This enables the program to be run in multiple terminal sessions and communicate via the database.
 
-However, this program doesn't handle merge conflicts. ```SharedChat``` instances check for updates at one second intervals. If one instance wants to update a ```ChatApp.rooms``` 
-dictionary value, but another instance has updated it in the previous one second (before the first ```SharedChat``` instance could retrieve the update), this program does not 
-handle these conflicts. It seems like there are probably best practices for this. I would be very happy to look into this - do you want me to extend this program to handle merge 
-conflicts too?
+The "Advanced" program uses asynchronous IO, which enables users to see chat updates while they are typing. Python's built-in "input()" function "blocks," which essentially means that when a user types a long message, the program waits for them to finish typing before continuing. In this application, that would mean that while a user is typing, their chat would not update with other users' messages. Using asynchronous IO enables users' chats to update while they are typing.
 
-I would also love to implement code tests and perhaps a database feature? Currently, the user's username and password are saved to ```ChatApp.users``` dictionary, but they 
-don't persist after the program stops running. Containing these in another file or a database would be a fairly easy way for these values to persist.
+In addition, the "Advanced" program creates a child process which checks the database at one second intervals to see whether _other_ users have uploaded messages to the database. If so, the child process tells the main process to retrieve those messages. This is how users' chat applications stay apprised of other users.
 
-In addition, this program doesn't stop users from having duplicate usernames. In fact, when it associates ```SharedChat``` instances with users, it assumes there are no 
-duplicate usernames. A more real-world solution would be to identify users (internally) by some hash (maybe of their username and the time/date of their account creation, 
-for example). That would better ensure that users are uniquely identified internally. I would be very happy to implement this too?
+Running the checker function in a child process prevents the main process (and consequently, the chat room from potentially becoming unresponsive. The checker function is resource intensive, and its resource intensity grows as other users' messages grow in size and frequency. If run in the main process, it could frequently make the chat room unresponsive, which would conflict with the requirements of a chat application. Chat applications should be prepared to accept users' input at all times. They should also quickly communicate a user's  message to other users. Running it in a child process could prevent the parent process (and consequently, the chat room) from becoming unresponsive.
+
+One awkward feature is that due to a previously-reported bug in a core ```asyncio``` function (https://stackoverflow.com/questions/69997653/python-asyncio-gather-does-not-exit-after-task-complete), the "Advanced" program keeps updating the terminal window after the chat room is closed. This prevents users from switching between chat rooms. The easiest way I have found around this is simply to quit the program and run it again to join another chat room. In addition, while the checker function (referred to in the paragraphs above) runs, it updates the terminal window. If a users is typing, their words appear to disappear every second (the checker function refreshes every second). However, when the user "sends" their message, it appears in full in the chat. I believe this is due to the asynchronous nature of the function that accepts CLI user input ("ainput()" - an asynchronous implementation of the built-in "input()" function from the third-party package ```aioconsole```). "ainput" executes for a short period of time, then lets other code (such as that which updates the chat) execute, then executes for another short period of time. The CLI appears to be refreshed every time "ainput" releases and regains code execution, but the function caches "draft input." The program behaves as expected, but I imagine that one or two small changes to the third-party package ```aioconsole``` would allow users to see all of their "draft input" every time "ainput" releases and regains code execution.
+
+I would love to implement code tests for this program. In addition, this program doesn't stop users from having duplicate usernames. In fact, when it associates ```SharedChat``` instances with users, it assumes there are no  duplicate usernames. A more real-world solution would be to identify users (internally) by some hash (maybe of their username and the time/date of their account creation, for example). That would better ensure that users are uniquely identified internally. I would be very happy to implement this too!
 
 The basic version was tested on Python 3.9.16. The advanced version was tested on Python 3.10.13.
 

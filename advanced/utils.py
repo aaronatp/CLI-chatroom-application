@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def query_exists_short(response):
     conn = sqlite3.connect("chatroom_app.db")
     cursor = conn.cursor()

@@ -2,6 +2,7 @@ import sqlite3
 
 
 def query_exists_short(response):
+    """Essentially checking whether a given room name exists"""
     conn = sqlite3.connect("chatroom_app.db")
     cursor = conn.cursor()
     cursor.execute("SELECT room_name FROM rooms WHERE room_name=?", (response,))
@@ -14,6 +15,7 @@ def query_exists_short(response):
 
 
 def query_exists_long(response):
+    """Checking whether a given username exists"""
     if response is None:
         return False
 
@@ -29,6 +31,10 @@ def query_exists_long(response):
 
 
 def get_password_from_username(user):
+    """
+    Given a username, we query the database and retrieve the user's password.
+    We use this to ensure that the user-supplied password matches the password we previously stored.
+    """
     conn = sqlite3.connect("chatroom_app.db")
     cursor = conn.cursor()
     print(f"user == {user}")
@@ -55,24 +61,19 @@ def create_user_and_password(username, password):
     conn.close()
 
 
-def get_room_content_from_db(room):  # calling this seems to duplicate
-    # print("are we calling our precious every time?")
+def get_room_content_from_db(room):
+    """Given a room name, we query the database and retrieve the room's contents"""
     conn = sqlite3.connect("chatroom_app.db")
     cursor = conn.cursor()
     cursor.execute("SELECT room_content FROM rooms WHERE room_name=?", (room,))  # ensure you don't fuck oup the database mwehn you change room_content
     counter = 0
-    # print(f"we're in room_content print cursor.fetchall(): {cursor.fetchall()[0]}")
-    # cursor.execute("SELECT room_content FROM rooms WHERE room_name=?", (room,))
     for room_content in cursor.fetchall():
         conn.close()
         counter += 1
         assert(counter != 2)  # if this fails, does that fetchall() returned multiple room content values?
-        # print(f"type of get_room_content == {type(room_content[0])}")
-        # print(f"get_room_content itself == {room_content[0]}")
         conn.close()
         return room_content[0]
     
-    # print(f"inspect cursor: {cursor.fetchall()[0]}")
     conn.close()  # we should never reach here
     assert(counter != 0)  # make sure you don't pass the room_content variable again lol
 

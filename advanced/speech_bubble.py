@@ -10,6 +10,7 @@ class SpeechBubble:
 
     
     def wrap_multi_line(self, username, text):
+        """Nitty gritty of formatting a speech bubble"""
         wrapped_text = f"{username}: "
         current_line = ""
         for word in text.split():
@@ -31,6 +32,7 @@ class SpeechBubble:
     
 
     async def beautify(self):
+        """Putting the speech bubble together"""
         top = "-" * self.line_length
         bottom = "-" * self.line_length
         body = f"| {self.wrap_multi_line(self.username, self.text)} |"

@@ -3,10 +3,10 @@ import sqlite3
 from multiprocessing import Process, Queue
 from concurrent.futures import CancelledError
 
+from aioconsole import ainput, aprint  # asynchronous implementations of python's built-in "input()" and "print()" functions
+
 import utils
 from speech_bubble import SpeechBubble
-
-from aioconsole import ainput, aprint  # asynchronous implementations of python's built-in "input()" and "print()" functions
 
 
 class ChatApp:
@@ -184,6 +184,7 @@ class ChatApp:
 
 
     async def run(self):
+        """Essentially runs the chat application"""
         while True:
             self.ensure_db_initialized()
             self.ensure_logged_in()
@@ -220,7 +221,11 @@ class SharedChat(ChatApp):
         self.room_content = room_content
 
 
-    async def update_room_content_class_db(self, message, room):  # ensure 'message' here is already beautified 
+    async def update_room_content_class_db(self, message, room):
+        """
+        Given a 'beautified' message and a room name, we update the
+        class 'room_content' attribute and 'room_content' database column.
+        """
         conn = sqlite3.connect("chatroom_app.db")
         cursor = conn.cursor()
 
@@ -236,19 +241,21 @@ class SharedChat(ChatApp):
 
 
     async def get_and_handle_user_input(self):
+        """Accepts and handles user input in the chat room"""
         while True:
             conn = sqlite3.connect("chatroom_app.db")
             cursor = conn.cursor()
             cursor.execute("SELECT room_update FROM rooms WHERE room_name=?", (self.current_room,))
             if cursor.fetchall()[0] == '1':
                 self.room_content = utils.get_room_content_from_db(self.current_room)
-                # aprint(utils.get_room_content_from_db(self.current_room), flush=True)
                 cursor.execute("UPDATE rooms set room_update=? WHERE room_name=?", ('0', self.current_room,))
                 conn.commit()
             conn.close()
 
             raw_message = await ainput("> ")
             if raw_message == 'q':
+                # Monkey patching to partially resolve an async.gather bug
+                # (also see 'self.run_chat_rountine', 'self.thin_wrapper', and CheckUpdateRoomContent.__anext__)
                 conn = sqlite3.connect("chatroom_app.db")
                 cursor = conn.cursor()
                 cursor.execute("UPDATE rooms set room_update=? WHERE room_name=?", ('-1', self.current_room,))
@@ -276,15 +283,14 @@ class SharedChat(ChatApp):
         
         Some error handling performed by the caller function.
         """
-    
         while True:
             await asyncio.sleep(1)
             conn = sqlite3.connect("chatroom_app.db")
             cursor = conn.cursor()
             new_content = utils.get_room_content_from_db(room).replace(self.room_content, "")  # essentially take the difference of the most current string and the previous to find new messages
             if new_content != '':
-                # add new_content to database
-                # cursor.execute("UPDATE rooms SET room_content=? WHERE room_name=?", (new_content, room,))
+                # sets room_update flag in database
+                # other users' chat applications will see this flag and update their local chatroom data
                 cursor.execute("UPDATE rooms SET room_update=? WHERE room_name=?", ('1', room,))
                 conn.commit()
                 conn.close()
@@ -295,30 +301,28 @@ class SharedChat(ChatApp):
 
             conn.close()
 
-    # make sure 'q' quits the chat program
-    # add in like 25 spaces between each printing
-    # improve functions documentation
-    # refactor into a few files
+
     async def thin_wrapper(self, room, room_content, queue):
         """
+        Retrieves data from the 'check_update_room_content' function and prints it for the user.
         
-        multiprocessing.Queue raises "_queue.Empty" if we try to 'get' from a subprocess when nothing is put
+        multiprocessing.Queue raises "_queue.Empty" if we try to 'get' from a subprocess when nothing is put.
 
         "_queue.Empty" is an empty object with no attributes. It is difficult to specifically filter those
         errors so we ignore all TypeErrors errors with no attributes.
         """
         async for _ in CheckUpdateRoomContent(room, room_content, queue):
-            if _ == -1:  # see 'self.run_chat_routine' - this works around a bug in asyncio.gather where it will keep yielding forever
+             # see 'self.run_chat_routine' - this partially resolves a bug in asyncio.gather where it will keep yielding forever
+            if _ == -1:
                 try:
                     # empty queue if we have to (can't join process if queue is not empty)
                     while True:
                         queue.get_nowait()
-
                 except:
                     pass
-
                 return
 
+            # start of the actual wrapper
             try:
                 await aprint('\n' * 25 + queue.get_nowait())
             except Exception as e:
@@ -333,16 +337,22 @@ class SharedChat(ChatApp):
 
 
     async def run_chat_routine(self):
+        """
+        Starts and runs subprocess that checks for other users' messages
+
+        Runs 'self.thin_wrapper' and 'self.get_and_handle_user_input' in asynchronous loop.
+        Prints other users' messages, and also prints the current users' messages.
+
+        Terminates process before it returns.
+        """
         # only create a new process for the check update content
         queue = Queue()
         run_check_update_content = Process(target=self.check_update_room_content, args=(queue, self.current_room,))
         run_check_update_content.start()  # checks/updates content database in a while True loop under the hood
         assert(run_check_update_content.is_alive() == True)
-        # unfortunately, there doesn't seem to be any clean way to simply exist asyncio.gather
-        # when the user wants to leave, 'get_and_handle_user_input' raises a LeaveRoomException under the hood
-        
+
+        # this workaround is due to a bug where asyncio.gather won't quit (https://stackoverflow.com/questions/69997653/python-asyncio-gather-does-not-exit-after-task-complete)
         try:
-            # this workaround is due to a bug where asyncio.gather won't quit (https://stackoverflow.com/questions/69997653/python-asyncio-gather-does-not-exit-after-task-complete)
             await asyncio.gather(
                 self.thin_wrapper(self.current_room, self.room_content, queue),
                 self.get_and_handle_user_input(),
@@ -351,7 +361,7 @@ class SharedChat(ChatApp):
         except CancelledError:
             # kill the child process
             run_check_update_content.join()
-            while run_check_update_content.is_alive() == True:  # if True, check again every second until False
+            while run_check_update_content.is_alive() == True:
                 await asyncio.sleep(1)
                 await aprint("checking again...")
 
@@ -381,9 +391,14 @@ class SharedChat(ChatApp):
             return await self.run_chat_routine()
         except BlockingIOError:
             raise  "Run this program with the Python '-u' flag (like so, 'python -u ./chatroom_app.py')" # - (https://stackoverflow.com/questions/230751/how-can-i-flush-the-output-of-the-print-function/230780#230780)
-        
+
 
 class CheckUpdateRoomContent(SharedChat):
+    """
+    Implements asynchronous iterator ('__aiter__') and generator ('__anext__') methods.
+
+    These methods are called in SharedChat.thin_wrapper in order to yield and print other users' messages.
+    """
     def __init__(self, current_room, room_content, queue):
         super().__init__(current_user, current_room, room_content)
         self.queue = queue
@@ -423,9 +438,6 @@ class CheckUpdateRoomContent(SharedChat):
 
 
 if __name__ == "__main__":
-    # __spec__ = None  # to avoid a stupid error raised when using pdb (https://stackoverflow.com/questions/45720153/python-multiprocessing-error-attributeerror-module-main-has-no-attribute/60922965?noredirect=1#comment83471090_45720872)
-    # sys.excepthook = utils.excepthook_replacement
-    
     current_user = None
     current_room = None
 

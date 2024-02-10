@@ -23,9 +23,7 @@ In addition, this program doesn't stop users from having duplicate usernames. In
 duplicate usernames. A more real-world solution would be to identify users (internally) by some hash (maybe of their username and the time/date of their account creation, 
 for example). That would better ensure that users are uniquely identified internally. I would be very happy to implement this too?
 
-# NOTE: Since "chatroom_app.py" only implements one user by default, I have not thoroughly tested the syncing feature for multiple users.
-
-Tested on Python 3.9.16.
+The basic version was tested on Python 3.9.16. The advanced version was tested on Python 3.10.13.
 
 # Examples
 
